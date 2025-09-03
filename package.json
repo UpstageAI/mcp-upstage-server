@@ -37,12 +37,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/UpstageAI/mcp-upstage.git",
-    "directory": "mcp-upstage-node"
+    "url": "https://github.com/UpstageAI/mcp-upstage-server.git"
   },
-  "homepage": "https://github.com/UpstageAI/mcp-upstage/tree/main/mcp-upstage-node",
+  "homepage": "https://github.com/UpstageAI/mcp-upstage-server",
   "bugs": {
-    "url": "https://github.com/UpstageAI/mcp-upstage/issues"
+    "url": "https://github.com/UpstageAI/mcp-upstage-server/issues"
   },
   "files": [
     "dist/**/*",

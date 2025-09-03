@@ -1,0 +1,79 @@
+{
+  "name": "mcp-upstage-server",
+  "version": "0.4.1",
+  "description": "MCP server for Upstage AI document processing - Node.js implementation",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-upstage": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "version": "npm run build",
+    "prepack": "npm run build",
+    "publish:test": "npm run build && npm pack --dry-run",
+    "publish:npm": "npm publish",
+    "publish:beta": "npm publish --tag beta"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "upstage",
+    "ai",
+    "document-processing",
+    "ocr",
+    "information-extraction",
+    "claude",
+    "llm"
+  ],
+  "author": "Upstage AI",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UpstageAI/mcp-upstage.git",
+    "directory": "mcp-upstage-node"
+  },
+  "homepage": "https://github.com/UpstageAI/mcp-upstage/tree/main/mcp-upstage-node",
+  "bugs": {
+    "url": "https://github.com/UpstageAI/mcp-upstage/issues"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.4",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "form-data": "^4.0.1",
+    "retry": "^0.13.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "@types/retry": "^0.12.5",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.18.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

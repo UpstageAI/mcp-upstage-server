@@ -1,0 +1,51 @@
+# Source files
+src/
+*.ts
+tsconfig.json
+
+# Development
+.env
+.env.local
+.env.*.local
+jest.config.js
+.eslintrc.*
+prettier.config.*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Test files
+**/*.test.*
+**/*.spec.*
+coverage/
+.nyc_output/
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+.travis.yml
+.circleci/
+
+# Documentation (keep README.md)
+docs/
+*.md
+!README.md
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+.DS_Store
+
+# Node modules (already handled by default)
+node_modules/

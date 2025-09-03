@@ -180,24 +180,15 @@ DEFAULT CATEGORIES:
 - report: Business report or analytical document
 - others: Other document types not listed above
 
-CUSTOM SCHEMA FORMAT: For custom classification, provide schema in this exact format:
-{
-  "type": "json_schema",
-  "json_schema": {
-    "name": "document-classify",
-    "schema": {
-      "type": "string",
-      "oneOf": [
-        {"const": "category1", "description": "Description of category 1"},
-        {"const": "category2", "description": "Description of category 2"},
-        {"const": "others", "description": "Other"}
-      ]
-    }
-  }
-}
+CUSTOM CATEGORIES: Simply provide an array of categories in schema_json:
+[
+  {"const": "category1", "description": "Description of category 1"},
+  {"const": "category2", "description": "Description of category 2"}, 
+  {"const": "others", "description": "Other"}
+]
 
 Example custom schema_json:
-{"type":"json_schema","json_schema":{"name":"document-classify","schema":{"type":"string","oneOf":[{"const":"medical","description":"Medical records or health documents"},{"const":"legal","description":"Legal documents"},{"const":"financial","description":"Financial statements or reports"},{"const":"others","description":"Other"}]}}}`,
+[{"const":"medical","description":"Medical records or health documents"},{"const":"legal","description":"Legal documents"},{"const":"financial","description":"Financial statements or reports"},{"const":"others","description":"Other"}]`,
     inputSchema: {
       type: 'object',
       properties: {

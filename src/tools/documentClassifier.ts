@@ -9,7 +9,6 @@ import {
   ensureDirectoryExists,
   readFileAsBase64,
   getMimeType,
-  parseSchemaJson,
 } from '../utils';
 
 interface ClassifyDocumentOptions {
@@ -66,15 +65,50 @@ export async function classifyDocument(options: ClassifyDocumentOptions): Promis
   
   // Determine schema source (custom schema has priority)
   if (schemaJson) {
-    // Parse and validate schema from JSON string
+    // Parse schema from JSON string - expect just the oneOf array
     try {
-      const parsedSchema = parseSchemaJson(schemaJson);
+      let categoriesArray;
+      
+      // Try to parse as oneOf array directly
+      try {
+        categoriesArray = JSON.parse(schemaJson);
+      } catch (parseError) {
+        throw new Error('Invalid JSON format');
+      }
+      
+      // If it's a full schema structure, extract the oneOf part
+      if (categoriesArray.type === 'json_schema' && categoriesArray.json_schema) {
+        categoriesArray = categoriesArray.json_schema.schema.oneOf;
+      } else if (categoriesArray.schema && categoriesArray.schema.oneOf) {
+        categoriesArray = categoriesArray.schema.oneOf;
+      } else if (categoriesArray.oneOf) {
+        categoriesArray = categoriesArray.oneOf;
+      }
+      // If it's already just an array, use it directly
+      else if (Array.isArray(categoriesArray)) {
+        // Validate that each item has const and description
+        for (const item of categoriesArray) {
+          if (!item.const || !item.description) {
+            throw new Error('Each category must have "const" and "description" fields');
+          }
+        }
+      } else {
+        throw new Error('Expected an array of categories with "const" and "description" fields');
+      }
+      
+      // Build the complete response format
       responseFormat = {
         type: 'json_schema',
-        json_schema: parsedSchema.json_schema
+        json_schema: {
+          name: 'document-classify',
+          schema: {
+            type: 'string',
+            oneOf: categoriesArray
+          }
+        }
       };
     } catch (error) {
-      throw new Error(`Invalid classification schema format: ${error instanceof Error ? error.message : error}`);
+      throw new Error(`Invalid classification categories: ${error instanceof Error ? error.message : error}`);
     }
     if (onProgress) {
       await onProgress({ progress: 20, total: 100 });

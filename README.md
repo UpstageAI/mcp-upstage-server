@@ -366,99 +366,68 @@ const schema = createSchema({
 
 The `classify_document` tool uses a different schema format optimized for classification tasks. Here's how to create custom classification schemas:
 
-### 📋 Basic Classification Schema Structure
+### 📋 Simple Classification Categories
 
-The classification schema must follow this exact structure:
+For custom categories, just provide an array of category objects:
 
 ```json
-{
-  "type": "json_schema",
-  "json_schema": {
-    "name": "document-classify",
-    "schema": {
-      "type": "string",
-      "oneOf": [
-        {"const": "category1", "description": "Description of category 1"},
-        {"const": "category2", "description": "Description of category 2"},
-        {"const": "others", "description": "Fallback category"}
-      ]
-    }
-  }
-}
+[
+  {"const": "category1", "description": "Description of category 1"},
+  {"const": "category2", "description": "Description of category 2"},
+  {"const": "others", "description": "Fallback category"}
+]
 ```
+
+The tool automatically wraps this in the proper schema structure for the API.
 
 ### ✅ Correct Classification Examples
 
 **Medical document classifier:**
 ```json
-{
-  "type": "json_schema",
-  "json_schema": {
-    "name": "document-classify",
-    "schema": {
-      "type": "string",
-      "oneOf": [
-        {"const": "prescription", "description": "Medical prescription document"},
-        {"const": "lab_result", "description": "Laboratory test results"},
-        {"const": "medical_record", "description": "Patient medical record"},
-        {"const": "insurance_claim", "description": "Medical insurance claim"},
-        {"const": "others", "description": "Other medical documents"}
-      ]
-    }
-  }
-}
+[
+  {"const": "prescription", "description": "Medical prescription document"},
+  {"const": "lab_result", "description": "Laboratory test results"},
+  {"const": "medical_record", "description": "Patient medical record"},
+  {"const": "insurance_claim", "description": "Medical insurance claim"},
+  {"const": "others", "description": "Other medical documents"}
+]
 ```
 
 **Business document classifier:**
 ```json
-{
-  "type": "json_schema",
-  "json_schema": {
-    "name": "document-classify",
-    "schema": {
-      "type": "string",
-      "oneOf": [
-        {"const": "purchase_order", "description": "Purchase order document"},
-        {"const": "delivery_note", "description": "Delivery or shipping note"},
-        {"const": "quotation", "description": "Price quotation or estimate"},
-        {"const": "meeting_minutes", "description": "Meeting minutes or notes"},
-        {"const": "others", "description": "Other business documents"}
-      ]
-    }
-  }
-}
+[
+  {"const": "purchase_order", "description": "Purchase order document"},
+  {"const": "delivery_note", "description": "Delivery or shipping note"},
+  {"const": "quotation", "description": "Price quotation or estimate"},
+  {"const": "meeting_minutes", "description": "Meeting minutes or notes"},
+  {"const": "others", "description": "Other business documents"}
+]
 ```
 
 ### ❌ Common Classification Mistakes
 
-**Wrong:** Missing oneOf structure
+**Wrong:** Missing description field
 ```json
-{
-  "type": "json_schema",
-  "json_schema": {
-    "name": "document-classify",
-    "schema": {
-      "type": "string",
-      "enum": ["invoice", "receipt"]
-    }
-  }
-}
+[
+  {"const": "invoice"},
+  {"const": "receipt"}
+]
 ```
 
-**Wrong:** Using object instead of string type
+**Wrong:** Missing const field
 ```json
-{
-  "type": "json_schema",
-  "json_schema": {
-    "name": "document-classify",
-    "schema": {
-      "type": "object",
-      "properties": {
-        "category": {"type": "string"}
-      }
-    }
-  }
-}
+[
+  {"description": "Invoice document"},
+  {"description": "Receipt document"}
+]
+```
+
+**Wrong:** Using different field names
+```json
+[
+  {"value": "invoice", "label": "Invoice document"},
+  {"type": "receipt", "desc": "Receipt document"}
+]
 ```
 
 ### 💡 Classification Best Practices
@@ -470,31 +439,25 @@ The classification schema must follow this exact structure:
 5. **Limit category count**: Too many categories can reduce accuracy (recommended: 3-10 categories)
 6. **Use consistent naming**: Stick to snake_case or kebab-case throughout
 
-### 🛠️ Classification Schema Helper
+### 🛠️ Classification Categories Helper
 
 ```javascript
-function createClassificationSchema(categories) {
-  return JSON.stringify({
-    "type": "json_schema",
-    "json_schema": {
-      "name": "document-classify", 
-      "schema": {
-        "type": "string",
-        "oneOf": categories.map(cat => ({
-          "const": cat.value,
-          "description": cat.description
-        }))
-      }
-    }
-  });
+function createClassificationCategories(categories) {
+  return JSON.stringify(categories.map(cat => ({
+    "const": cat.value,
+    "description": cat.description
+  })));
 }
 
 // Usage example:
-const schema = createClassificationSchema([
+const categoriesJson = createClassificationCategories([
   {value: "legal_contract", description: "Legal contracts and agreements"},
   {value: "financial_report", description: "Financial statements and reports"},
   {value: "others", description: "Other document types"}
 ]);
+
+// Result: Ready to use as schema_json parameter
+// [{"const":"legal_contract","description":"Legal contracts and agreements"},{"const":"financial_report","description":"Financial statements and reports"},{"const":"others","description":"Other document types"}]
 ```
 
 ## Development

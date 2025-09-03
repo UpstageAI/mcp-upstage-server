@@ -59,13 +59,20 @@ export async function classifyDocument(options: ClassifyDocumentOptions): Promis
     await onProgress({ progress: 10, total: 100 });
   }
   
-  let schema: any = DEFAULT_CLASSIFICATION_SCHEMA.json_schema;
+  let responseFormat: any = {
+    type: 'json_schema',
+    json_schema: DEFAULT_CLASSIFICATION_SCHEMA.json_schema
+  };
   
   // Determine schema source (custom schema has priority)
   if (schemaJson) {
     // Parse and validate schema from JSON string
     try {
-      schema = parseSchemaJson(schemaJson).json_schema;
+      const parsedSchema = parseSchemaJson(schemaJson);
+      responseFormat = {
+        type: 'json_schema',
+        json_schema: parsedSchema.json_schema
+      };
     } catch (error) {
       throw new Error(`Invalid classification schema format: ${error instanceof Error ? error.message : error}`);
     }
@@ -75,7 +82,15 @@ export async function classifyDocument(options: ClassifyDocumentOptions): Promis
   } else if (schemaPath) {
     // Load schema from file
     const { readJsonFile } = await import('../utils');
-    schema = await readJsonFile(schemaPath);
+    const loadedSchema = await readJsonFile(schemaPath);
+    if (loadedSchema.type === 'json_schema' && loadedSchema.json_schema) {
+      responseFormat = loadedSchema;
+    } else {
+      responseFormat = {
+        type: 'json_schema', 
+        json_schema: loadedSchema
+      };
+    }
     if (onProgress) {
       await onProgress({ progress: 20, total: 100 });
     }
@@ -106,10 +121,7 @@ export async function classifyDocument(options: ClassifyDocumentOptions): Promis
         ]
       }
     ],
-    response_format: {
-      type: 'json_schema',
-      json_schema: schema
-    }
+    response_format: responseFormat
   };
   
   // Report API request progress

@@ -1,6 +1,6 @@
 {
   "name": "mcp-upstage-server",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "MCP server for Upstage AI document processing - Node.js implementation",
   "main": "dist/index.js",
   "bin": {
